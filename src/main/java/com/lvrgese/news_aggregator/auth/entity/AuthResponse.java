@@ -1,13 +1,13 @@
 package com.lvrgese.news_aggregator.auth.entity;
 
-public class UserDTO {
+public class AuthResponse {
     private Long id;
     private String name;
     private String username;
 
-    public UserDTO(){}
+    public AuthResponse(){}
 
-    public UserDTO(Long id, String name, String username) {
+    public AuthResponse(Long id, String name, String username) {
         this.id = id;
         this.name = name;
         this.username = username;

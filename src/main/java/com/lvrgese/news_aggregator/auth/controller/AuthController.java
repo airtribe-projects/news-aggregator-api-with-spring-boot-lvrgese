@@ -1,8 +1,10 @@
 package com.lvrgese.news_aggregator.auth.controller;
 
+import com.lvrgese.news_aggregator.auth.entity.LoginRequest;
 import com.lvrgese.news_aggregator.auth.entity.RegisterRequest;
-import com.lvrgese.news_aggregator.auth.entity.UserDTO;
-import com.lvrgese.news_aggregator.auth.service.UserService;
+import com.lvrgese.news_aggregator.auth.entity.AuthResponse;
+import com.lvrgese.news_aggregator.auth.service.AuthService;
+import com.lvrgese.news_aggregator.exception.InvalidCredentialsException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,19 +13,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerNewUser(@RequestBody @Valid RegisterRequest req){
-        return new ResponseEntity<UserDTO>(userService.registerUser(req), HttpStatus.CREATED) ;
+    public ResponseEntity<AuthResponse> registerNewUser(@RequestBody @Valid RegisterRequest req){
+        return new ResponseEntity<AuthResponse>(authService.registerUser(req), HttpStatus.CREATED) ;
     }
 
-    @GetMapping("/register")
-    public String testHello(){
-        return "Hello world";
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> loginUser(@RequestBody @Valid LoginRequest loginRequest) throws InvalidCredentialsException {
+        return ResponseEntity.ok(authService.loginUser(loginRequest));
     }
 }
