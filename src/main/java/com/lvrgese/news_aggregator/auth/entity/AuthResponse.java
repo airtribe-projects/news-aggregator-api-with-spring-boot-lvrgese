@@ -4,13 +4,15 @@ public class AuthResponse {
     private Long id;
     private String name;
     private String username;
+    private String token;
 
     public AuthResponse(){}
 
-    public AuthResponse(Long id, String name, String username) {
+    public AuthResponse(Long id, String name, String username,String token) {
         this.id = id;
         this.name = name;
         this.username = username;
+        this.token = token;
     }
 
     public Long getId() {
@@ -35,5 +37,13 @@ public class AuthResponse {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

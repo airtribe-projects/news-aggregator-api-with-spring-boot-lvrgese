@@ -2,12 +2,12 @@ package com.lvrgese.news_aggregator.auth.service;
 
 import com.lvrgese.news_aggregator.auth.entity.*;
 import com.lvrgese.news_aggregator.auth.repository.UserRepository;
+import com.lvrgese.news_aggregator.auth.util.JwtUtil;
 import com.lvrgese.news_aggregator.exception.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,8 @@ public class AuthService {
                 .build();
         User savedUser =  userRepository.save(user);
 
-        return new AuthResponse(savedUser.getUserId(), savedUser.getName(), savedUser.getUsername());
+        return new AuthResponse(savedUser.getUserId(), savedUser.getName(), savedUser.getUsername(),
+                JwtUtil.generateJwtToken(user.getUsername()));
     }
 
     public AuthResponse loginUser(LoginRequest loginRequest) throws InvalidCredentialsException {
@@ -47,7 +48,8 @@ public class AuthService {
 
             SecurityContextHolder.getContext().setAuthentication(auth);
             User currentUser = userRepository.findByUsername(loginRequest.getUsername());
-            return new AuthResponse(currentUser.getUserId(), currentUser.getName(), currentUser.getUsername());
+            return new AuthResponse(currentUser.getUserId(), currentUser.getName(), currentUser.getUsername(),
+                    JwtUtil.generateJwtToken(currentUser.getUsername()));
         }
         catch (Exception ex){
             throw  new InvalidCredentialsException("Login failed");
