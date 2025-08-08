@@ -1,6 +1,6 @@
-package com.lvrgese.news_aggregator.auth.entity;
+package com.lvrgese.news_aggregator.entity;
 
-import com.lvrgese.news_aggregator.auth.repository.UserRepository;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +29,10 @@ public class User {
 
     @NotNull
     private Boolean isEnabled;
+
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
+    private NewsPreferences newsPreferences;
 
     public User() {
     }
@@ -121,5 +125,13 @@ public class User {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public NewsPreferences getNewsPreferences() {
+        return newsPreferences;
+    }
+
+    public void setNewsPreferences(NewsPreferences newsPreferences) {
+        this.newsPreferences = newsPreferences;
     }
 }

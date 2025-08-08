@@ -25,4 +25,14 @@ public class GlobalExceptionHandler {
     public  ResponseEntity<?> handleUsernameNotFoundException(Exception ex){
         return ResponseEntity.status(400).body(Map.of("Invalid username",ex.getMessage()));
     }
+
+    @ExceptionHandler(PreferencesNotFoundException.class)
+    public  ResponseEntity<?> handlePreferencesNotFoundException(Exception ex){
+        return ResponseEntity.status(400).body(Map.of("Error",ex.getMessage()));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public  ResponseEntity<?> handleUserNotFoundException(Exception ex){
+        return ResponseEntity.status(400).body(Map.of("Error",ex.getMessage()));
+    }
 }

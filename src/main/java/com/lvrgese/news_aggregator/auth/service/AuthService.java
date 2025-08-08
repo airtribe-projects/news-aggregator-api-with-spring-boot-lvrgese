@@ -1,8 +1,10 @@
 package com.lvrgese.news_aggregator.auth.service;
 
 import com.lvrgese.news_aggregator.auth.entity.*;
-import com.lvrgese.news_aggregator.auth.repository.UserRepository;
+import com.lvrgese.news_aggregator.repository.UserRepository;
 import com.lvrgese.news_aggregator.auth.util.JwtUtil;
+import com.lvrgese.news_aggregator.entity.User;
+import com.lvrgese.news_aggregator.entity.UserRole;
 import com.lvrgese.news_aggregator.exception.InvalidCredentialsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

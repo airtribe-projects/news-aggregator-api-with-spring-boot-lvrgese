@@ -1,4 +1,4 @@
-package com.lvrgese.news_aggregator.auth.entity;
+package com.lvrgese.news_aggregator.entity;
 
 public enum UserRole {
     ROLE_USER,

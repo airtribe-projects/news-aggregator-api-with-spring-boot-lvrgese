@@ -1,6 +1,7 @@
 package com.lvrgese.news_aggregator.auth.service;
 
 import com.lvrgese.news_aggregator.auth.util.JwtUtil;
+import com.lvrgese.news_aggregator.exception.InvalidJwtTokenException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,11 +44,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (JwtUtil.validateJwtToken(token)) {
-                UsernamePasswordAuthenticationToken auth = new
-                        UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            try {
+                if (JwtUtil.validateJwtToken(token)) {
+                    UsernamePasswordAuthenticationToken auth = new
+                            UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            } catch (InvalidJwtTokenException e) {
+                filterChain.doFilter(request,response);
             }
         }
 

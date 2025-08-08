@@ -1,8 +1,8 @@
 package com.lvrgese.news_aggregator.auth.service;
 
 import com.lvrgese.news_aggregator.auth.entity.CustomUserDetails;
-import com.lvrgese.news_aggregator.auth.entity.User;
-import com.lvrgese.news_aggregator.auth.repository.UserRepository;
+import com.lvrgese.news_aggregator.entity.User;
+import com.lvrgese.news_aggregator.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

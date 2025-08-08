@@ -1,5 +1,6 @@
 package com.lvrgese.news_aggregator.auth.entity;
 
+import com.lvrgese.news_aggregator.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
