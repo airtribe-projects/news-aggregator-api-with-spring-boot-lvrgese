@@ -83,7 +83,7 @@ public class NewsPreferences {
         return prefId;
     }
 
-    public void setPrefId(long prefId) {
+    public void setPrefId(Long prefId) {
         this.prefId = prefId;
     }
 

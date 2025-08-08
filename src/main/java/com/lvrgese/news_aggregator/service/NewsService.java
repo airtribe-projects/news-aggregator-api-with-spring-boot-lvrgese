@@ -46,7 +46,10 @@ public class NewsService {
         if(user.getNewsPreferences() == null){
             throw new PreferencesNotFoundException("No preferences saved for user with id "+user.getUserId());
         }
-        NewsPreferences savedPref =  newsPreferencesRepository.save(buildPreferences(pref,user));
+        Long currentPrefId = user.getNewsPreferences().getPrefId();
+        NewsPreferences newPref = buildPreferences(pref,user);
+        newPref.setPrefId(currentPrefId);
+        NewsPreferences savedPref =  newsPreferencesRepository.save(newPref);
         return mapToDto(savedPref);
     }
 
