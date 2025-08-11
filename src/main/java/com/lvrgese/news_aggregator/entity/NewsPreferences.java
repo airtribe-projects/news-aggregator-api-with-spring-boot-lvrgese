@@ -32,6 +32,7 @@ public class NewsPreferences {
     }
 
     public NewsPreferences(builder b){
+        this.prefId = b.prefId;
         this.query = b.query;
         this.lang = b.lang;
         this.count = b.count;
@@ -41,12 +42,18 @@ public class NewsPreferences {
     }
 
     public static class builder{
+        private Long prefId;
         private String query;
         private String lang;
         private String country;
         private int count;
         private String sortBy;
         private User user;
+
+        public builder prefId(Long id){
+            this.prefId = id;
+            return this;
+        }
 
         public builder query(String query){
             this.query = query;

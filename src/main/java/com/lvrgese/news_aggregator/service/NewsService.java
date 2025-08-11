@@ -50,8 +50,15 @@ public class NewsService {
     public NewsPreferencesDTO createNewsPreferencesForUser(NewsPreferencesDTO pref){
 
         User user = getCurrentUser();
-
-        NewsPreferences savedPref =  newsPreferencesRepository.save(buildPreferences(pref,user));
+        NewsPreferences newPref =new NewsPreferences.builder()
+                .query(pref.getQuery())
+                .country(Country.isValid(pref.getCountry())? pref.getCountry() : null)
+                .lang(Language.isValid(pref.getLang()) ? pref.getLang() : null)
+                .count(pref.getCount())
+                .sortBy(getValidatedSortBy(pref.getSortBy()))
+                .user(user)
+                .build();
+        NewsPreferences savedPref =  newsPreferencesRepository.save(newPref);
         return mapToDto(savedPref);
     }
 
@@ -60,9 +67,18 @@ public class NewsService {
         if(user.getNewsPreferences() == null){
             throw new PreferencesNotFoundException("No preferences saved for user with id "+user.getUserId());
         }
-        Long currentPrefId = user.getNewsPreferences().getPrefId();
-        NewsPreferences newPref = buildPreferences(pref,user);
-        newPref.setPrefId(currentPrefId);
+        NewsPreferences currentPref = user.getNewsPreferences();
+        NewsPreferences newPref =new NewsPreferences.builder()
+                .prefId(currentPref.getPrefId())
+                .query(pref.getQuery())
+                .country(Country.isValid(pref.getCountry())? pref.getCountry() :currentPref.getCountry())
+                .lang(Language.isValid(pref.getLang()) ? pref.getLang() : currentPref.getLang())
+                .count(pref.getCount())
+                .sortBy(getValidatedSortBy(pref.getSortBy()))
+                .user(user)
+                .build();
+
+
         NewsPreferences savedPref =  newsPreferencesRepository.save(newPref);
         return mapToDto(savedPref);
     }
@@ -90,20 +106,5 @@ public class NewsService {
             return "publishedAt";
         }
         return sortBy;
-    }
-
-    private NewsPreferences buildPreferences(NewsPreferencesDTO pref,User user){
-
-        String lang = Language.isValid(pref.getLang()) ? pref.getLang() : null;
-        String country = Country.isValid(pref.getCountry())? pref.getCountry() : null;
-
-        return new NewsPreferences.builder()
-                .query(pref.getQuery())
-                .country(country)
-                .lang(lang)
-                .count(pref.getCount())
-                .sortBy(getValidatedSortBy(pref.getSortBy()))
-                .user(user)
-                .build();
     }
 }
