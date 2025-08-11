@@ -1,7 +1,9 @@
 package com.lvrgese.news_aggregator.controller;
 
 import com.lvrgese.news_aggregator.dto.NewsPreferencesDTO;
+import com.lvrgese.news_aggregator.dto.UserDTO;
 import com.lvrgese.news_aggregator.exception.PreferencesNotFoundException;
+import com.lvrgese.news_aggregator.exception.UserNotFoundException;
 import com.lvrgese.news_aggregator.service.NewsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,18 +17,23 @@ public class NewsController {
         this.newsService = newsService;
     }
 
-    @PostMapping("/preferences/{id}")
-    public ResponseEntity<NewsPreferencesDTO> createPreferences(@RequestBody NewsPreferencesDTO dto, @PathVariable Long id){
-        return ResponseEntity.ok(newsService.createNewsPreferencesForUser(dto,id));
+    @GetMapping("/profile")
+    public ResponseEntity<UserDTO> getUserById()  {
+        return ResponseEntity.ok(newsService.getUserProfile());
     }
 
-    @GetMapping("/preferences/{id}")
-    public ResponseEntity<NewsPreferencesDTO> getPreferencesForUser(@PathVariable Long id) throws PreferencesNotFoundException {
-        return ResponseEntity.ok(newsService.getNewsPreferenceByUserId(id));
+    @PostMapping("/preferences")
+    public ResponseEntity<NewsPreferencesDTO> createPreferencesForCurrentUser(@RequestBody NewsPreferencesDTO dto){
+        return ResponseEntity.ok(newsService.createNewsPreferencesForUser(dto));
     }
 
-    @PutMapping("/preferences/{id}")
-    public ResponseEntity<NewsPreferencesDTO> updatePreferencesForUser(@RequestBody NewsPreferencesDTO dto, @PathVariable Long id) throws PreferencesNotFoundException {
-        return ResponseEntity.ok(newsService.updateNewsPreferencesForUser(dto,id));
+    @GetMapping("/preferences")
+    public ResponseEntity<NewsPreferencesDTO> getPreferencesForCurrentUser() throws PreferencesNotFoundException {
+        return ResponseEntity.ok(newsService.getNewsPreferenceByUserId());
+    }
+
+    @PutMapping("/preferences")
+    public ResponseEntity<NewsPreferencesDTO> updatePreferencesForCurrentUser(@RequestBody NewsPreferencesDTO dto) throws PreferencesNotFoundException {
+        return ResponseEntity.ok(newsService.updateNewsPreferencesForUser(dto));
     }
 }

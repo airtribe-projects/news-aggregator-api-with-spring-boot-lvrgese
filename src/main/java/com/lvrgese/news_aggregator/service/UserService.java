@@ -20,15 +20,5 @@ public class UserService {
         this.newsService = newsService;
     }
 
-    public UserDTO getUserById(Long id) throws UserNotFoundException {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with id "+ id + " is not found"));
-        NewsPreferencesDTO pref = null;
-        try {
-            pref = newsService.getNewsPreferenceByUserId(id);
-        }
-        catch (Exception ignored){}
 
-        return new UserDTO(user,pref);
-    }
 }

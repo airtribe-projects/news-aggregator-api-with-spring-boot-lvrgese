@@ -1,35 +1,29 @@
 package com.lvrgese.news_aggregator.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Arrays;
 
 public enum Country {
-    @JsonProperty("au") AUSTRALIA,
-    @JsonProperty("br") BRAZIL,
-    @JsonProperty("ca") CANADA,
-    @JsonProperty("cn") CHINA,
-    @JsonProperty("eg") EGYPT,
-    @JsonProperty("fr") FRANCE,
-    @JsonProperty("de") GERMANY,
-    @JsonProperty("gr") GREECE,
-    @JsonProperty("hk") HONG_KONG,
-    @JsonProperty("in") INDIA,
-    @JsonProperty("ie") IRELAND,
-    @JsonProperty("it") ITALY,
-    @JsonProperty("jp") JAPAN,
-    @JsonProperty("nl") NETHERLANDS,
-    @JsonProperty("no") NORWAY,
-    @JsonProperty("pk") PAKISTAN,
-    @JsonProperty("pe") PERU,
-    @JsonProperty("ph") PHILIPPINES,
-    @JsonProperty("pt") PORTUGAL,
-    @JsonProperty("ro") ROMANIA,
-    @JsonProperty("ru") RUSSIAN_FEDERATION,
-    @JsonProperty("sg") SINGAPORE,
-    @JsonProperty("es") SPAIN,
-    @JsonProperty("se") SWEDEN,
-    @JsonProperty("ch") SWITZERLAND,
-    @JsonProperty("tw") TAIWAN,
-    @JsonProperty("ua") UKRAINE,
-    @JsonProperty("gb") UNITED_KINGDOM,
-    @JsonProperty("us") UNITED_STATES
+    AU("au"), BR("br"), CA("ca"), CN("cn"), EG("eg"),
+    FR("fr"), DE("de"), GR("gr"), HK("hk"), IN("in"),
+    IE("ie"), IT("it"), JP("jp"), NL("nl"), NO("no"),
+    PK("pk"), PE("pe"), PH("ph"), PT("pt"), RO("ro"),
+    RU("ru"), SG("sg"), ES("es"), SE("se"), CH("ch"),
+    TW("tw"), UA("ua"), GB("gb"), US("us");
+
+    private final String code;
+
+    Country(String code) {
+        this.code = code;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public static boolean isValid(String code) {
+        return Arrays.stream(values())
+                .anyMatch(country -> country.code.equalsIgnoreCase(code));
+    }
 }
+
+

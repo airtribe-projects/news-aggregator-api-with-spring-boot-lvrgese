@@ -1,24 +1,21 @@
 package com.lvrgese.news_aggregator.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Arrays;
 
 public enum Language {
-    @JsonProperty("en") ENGLISH,
-    @JsonProperty("fr") FRENCH,
-    @JsonProperty("de") GERMAN,
-    @JsonProperty("el") GREEK,
-    @JsonProperty("hi") HINDI,
-    @JsonProperty("it") ITALIAN,
-    @JsonProperty("ja") JAPANESE,
-    @JsonProperty("ml") MALAYALAM,
-    @JsonProperty("mr") MARATHI,
-    @JsonProperty("no") NORWEGIAN,
-    @JsonProperty("pt") PORTUGUESE,
-    @JsonProperty("ro") ROMANIAN,
-    @JsonProperty("ru") RUSSIAN,
-    @JsonProperty("es") SPANISH,
-    @JsonProperty("sv") SWEDISH,
-    @JsonProperty("ta") TAMIL,
-    @JsonProperty("te") TELUGU,
-    @JsonProperty("uk") UKRAINIAN
+    EN("en"), FR("fr"), DE("de"), EL("el"), HI("hi"),
+    IT("it"), JA("ja"), ML("ml"), MR("mr"), NO("no"),
+    PT("pt"), RO("ro"), RU("ru"), ES("es"), SV("sv"),
+    TA("ta"), TE("te"), UK("uk");
+
+    private final String code;
+
+    Language(String code) {
+        this.code = code;
+    }
+
+    public static boolean isValid(String code) {
+        return Arrays.stream(values())
+                .anyMatch(lang -> lang.code.equalsIgnoreCase(code));
+    }
 }

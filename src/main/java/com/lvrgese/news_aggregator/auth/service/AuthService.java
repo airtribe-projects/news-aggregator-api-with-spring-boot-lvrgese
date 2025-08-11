@@ -49,7 +49,7 @@ public class AuthService {
                     (loginRequest.getUsername(), loginRequest.getPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(auth);
-            User currentUser = userRepository.findByUsername(loginRequest.getUsername());
+            User currentUser = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow();
             return new AuthResponse(currentUser.getUserId(), currentUser.getName(), currentUser.getUsername(),
                     JwtUtil.generateJwtToken(currentUser.getUsername()));
         }
