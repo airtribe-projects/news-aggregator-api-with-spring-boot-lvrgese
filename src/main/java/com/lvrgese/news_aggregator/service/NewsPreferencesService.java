@@ -28,7 +28,7 @@ public class NewsPreferencesService {
         User user = userService.getCurrentUser();
         if(user.getNewsPreferences() == null){
             log.warn("No preferences saved for current user. Retrieval failed");
-            throw new ResourceNotFoundException("No preferences saved for user with id "+user.getUserId());
+            throw new ResourceNotFoundException("No preferences saved for current user ");
         }
         log.debug("Successfully retrieved News preferences of current user: {}",user.getNewsPreferences());
         return mapToDto(user.getNewsPreferences());
@@ -58,7 +58,7 @@ public class NewsPreferencesService {
         User user = userService.getCurrentUser();
         if(user.getNewsPreferences() == null){
             log.warn("No preferences saved for current user. Update failed");
-            throw new ResourceNotFoundException("No preferences saved for user with id "+user.getUserId());
+            throw new ResourceNotFoundException("No preferences saved for current user");
         }
         NewsPreferences currentPref = user.getNewsPreferences();
         NewsPreferences newPref = NewsPreferences.builder()

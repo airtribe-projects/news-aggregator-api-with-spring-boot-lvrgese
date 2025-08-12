@@ -37,6 +37,7 @@ public class User {
     }
 
     public User(UserBuilder builder) {
+        this.userId = builder.userId;
         this.userRole = builder.userRole;
         this.password = builder.password;
         this.name = builder.name;
@@ -45,12 +46,17 @@ public class User {
     }
 
     public static class UserBuilder {
+        private Long userId;
         private String username;
         private String name;
         private String password;
         private UserRole userRole;
         private Boolean isEnabled;
 
+        public UserBuilder userId(Long userId){
+            this.userId = userId;
+            return this;
+        }
         public UserBuilder username(String username) {
             this.username= username;
             return this;

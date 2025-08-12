@@ -8,8 +8,4 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface NewsPreferencesRepository extends JpaRepository<NewsPreferences,Long> {
-
-    Optional<NewsPreferences> findByUser(User user);
-
-}
+public interface NewsPreferencesRepository extends JpaRepository<NewsPreferences,Long> { }
