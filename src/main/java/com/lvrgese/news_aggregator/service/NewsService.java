@@ -1,86 +1,58 @@
 package com.lvrgese.news_aggregator.service;
 
-import com.lvrgese.news_aggregator.dto.NewsPreferencesDTO;
-import com.lvrgese.news_aggregator.dto.UserDTO;
-import com.lvrgese.news_aggregator.entity.Country;
-import com.lvrgese.news_aggregator.entity.Language;
 import com.lvrgese.news_aggregator.entity.NewsPreferences;
 import com.lvrgese.news_aggregator.entity.User;
-import com.lvrgese.news_aggregator.exception.PreferencesNotFoundException;
-import com.lvrgese.news_aggregator.exception.UserNotFoundException;
-import com.lvrgese.news_aggregator.repository.NewsPreferencesRepository;
 import com.lvrgese.news_aggregator.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
 import java.util.Optional;
 
 @Service
 public class NewsService {
 
-    private final NewsPreferencesRepository newsPreferencesRepository;
-
+    private final WebClient gNewsClient;
     private final UserRepository userRepository;
 
-    public NewsService(NewsPreferencesRepository newsPreferencesRepository, UserRepository userRepository) {
-        this.newsPreferencesRepository = newsPreferencesRepository;
+    @Value("${gnews.api.key}")
+    private String apiKey;
+
+
+    public NewsService(@Qualifier("gNewsClient") WebClient gNewsClient, UserRepository userRepository) {
+        this.gNewsClient = gNewsClient;
         this.userRepository = userRepository;
     }
 
-    public UserDTO getUserProfile() {
-        User user = getCurrentUser();
-        NewsPreferencesDTO pref = null;
-        try {
-            pref = getNewsPreferenceByUserId();
-        }
-        catch (Exception ignored){}
-
-        return new UserDTO(user,pref);
-    }
-
-    public NewsPreferencesDTO getNewsPreferenceByUserId() throws PreferencesNotFoundException {
-        User user = getCurrentUser();
-        if(user.getNewsPreferences() == null){
-            throw new PreferencesNotFoundException("No preferences saved for user with id "+user.getUserId());
-        }
-        return mapToDto(user.getNewsPreferences());
-    }
-
-    public NewsPreferencesDTO createNewsPreferencesForUser(NewsPreferencesDTO pref){
+    public Mono<String> fetchNews() {
 
         User user = getCurrentUser();
-        NewsPreferences newPref =new NewsPreferences.builder()
-                .query(pref.getQuery())
-                .country(Country.isValid(pref.getCountry())? pref.getCountry() : null)
-                .lang(Language.isValid(pref.getLang()) ? pref.getLang() : null)
-                .count(pref.getCount())
-                .sortBy(getValidatedSortBy(pref.getSortBy()))
-                .user(user)
-                .build();
-        NewsPreferences savedPref =  newsPreferencesRepository.save(newPref);
-        return mapToDto(savedPref);
-    }
+        NewsPreferences pref = user.getNewsPreferences();
 
-    public NewsPreferencesDTO updateNewsPreferencesForUser(NewsPreferencesDTO pref) throws PreferencesNotFoundException {
-        User user = getCurrentUser();
-        if(user.getNewsPreferences() == null){
-            throw new PreferencesNotFoundException("No preferences saved for user with id "+user.getUserId());
-        }
-        NewsPreferences currentPref = user.getNewsPreferences();
-        NewsPreferences newPref =new NewsPreferences.builder()
-                .prefId(currentPref.getPrefId())
-                .query(pref.getQuery())
-                .country(Country.isValid(pref.getCountry())? pref.getCountry() :currentPref.getCountry())
-                .lang(Language.isValid(pref.getLang()) ? pref.getLang() : currentPref.getLang())
-                .count(pref.getCount())
-                .sortBy(getValidatedSortBy(pref.getSortBy()))
-                .user(user)
-                .build();
+        URI uri = UriComponentsBuilder
+                .fromUriString("https://gnews.io/api/v4")
+                .path("/search")
+                .queryParam("q", pref.getQuery())
+                .queryParamIfPresent("lang", Optional.ofNullable(pref.getLang()))
+                .queryParamIfPresent("country", Optional.ofNullable(pref.getCountry()))
+                .queryParam("max", pref.getCount())
+                .queryParamIfPresent("sortBy", Optional.ofNullable(pref.getSortBy()))
+                .queryParam("apikey", apiKey)
+                .build(true) // keep encoded params as-is
+                .toUri();
 
-
-        NewsPreferences savedPref =  newsPreferencesRepository.save(newPref);
-        return mapToDto(savedPref);
+        return gNewsClient.get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnNext(body -> System.out.println("📩 Response: " + body));
     }
 
     public User getCurrentUser() {
@@ -90,21 +62,5 @@ public class NewsService {
 
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-
-    private NewsPreferencesDTO mapToDto(NewsPreferences pref){
-
-        return new NewsPreferencesDTO(pref.getPrefId(),pref.getQuery(),pref.getLang(),
-                pref.getCountry(),pref.getCount(),pref.getSortBy());
-    }
-
-    private String getValidatedSortBy(String sortBy){
-
-        if(sortBy == null)
-            return null;
-        if(!sortBy.equals("publishedAt") && ! sortBy.equals("relevance") ){
-            return "publishedAt";
-        }
-        return sortBy;
     }
 }
