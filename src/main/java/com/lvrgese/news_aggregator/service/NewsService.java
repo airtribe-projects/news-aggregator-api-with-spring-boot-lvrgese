@@ -5,8 +5,7 @@ import com.lvrgese.news_aggregator.entity.NewsPreferences;
 import com.lvrgese.news_aggregator.entity.User;
 import com.lvrgese.news_aggregator.exception.GNewsFetchException;
 import com.lvrgese.news_aggregator.exception.ResourceNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +15,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class NewsService {
 
     private final RestTemplate restTemplate;
@@ -32,6 +32,7 @@ public class NewsService {
     public GNewsResponse fetchNews() throws ResourceNotFoundException, GNewsFetchException {
 
         User user = userService.getCurrentUser();
+        log.info("Fetching news for current user");
         NewsPreferences pref = user.getNewsPreferences();
         if(pref == null){
             throw new ResourceNotFoundException("No preferences set for current user");
@@ -48,10 +49,12 @@ public class NewsService {
                 .queryParam("apikey", apiKey)
                 .build(true) // keep encoded params as-is
                 .toUri();
+        log.debug("Constructed GNews API request: {}", uri);
         try{
             return restTemplate.getForObject(uri, GNewsResponse.class);
         }
         catch (Exception ex){
+            log.error("GNews API call unsuccessful", ex);
             throw new GNewsFetchException("GNews API call unsuccessful");
         }
     }

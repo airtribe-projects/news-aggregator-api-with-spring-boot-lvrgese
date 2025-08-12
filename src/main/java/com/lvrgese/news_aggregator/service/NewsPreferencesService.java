@@ -8,9 +8,11 @@ import com.lvrgese.news_aggregator.entity.User;
 import com.lvrgese.news_aggregator.exception.ResourceAlreadyExistsException;
 import com.lvrgese.news_aggregator.exception.ResourceNotFoundException;
 import com.lvrgese.news_aggregator.repository.NewsPreferencesRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class NewsPreferencesService {
 
     private final NewsPreferencesRepository newsPreferencesRepository;
@@ -25,8 +27,10 @@ public class NewsPreferencesService {
     public NewsPreferencesDTO getNewsPreferencesForCurrentUser() throws ResourceNotFoundException {
         User user = userService.getCurrentUser();
         if(user.getNewsPreferences() == null){
+            log.warn("No preferences saved for current user. Retrieval failed");
             throw new ResourceNotFoundException("No preferences saved for user with id "+user.getUserId());
         }
+        log.debug("Successfully retrieved News preferences of current user: {}",user.getNewsPreferences());
         return mapToDto(user.getNewsPreferences());
     }
 
@@ -34,8 +38,10 @@ public class NewsPreferencesService {
 
         User user = userService.getCurrentUser();
         if(user.getNewsPreferences() != null){
+            log.warn("Trying to create new preferences for current user, But preferences already  exist");
             throw new ResourceAlreadyExistsException("News preferences already exits. Please update");
         }
+        log.debug("Creating preferences: {}", pref);
         NewsPreferences newPref =NewsPreferences.builder()
                 .query(pref.getQuery())
                 .country(Country.isValid(pref.getCountry())? pref.getCountry() : null)
@@ -51,6 +57,7 @@ public class NewsPreferencesService {
     public NewsPreferencesDTO updateNewsPreferencesForUser(NewsPreferencesDTO pref) throws ResourceNotFoundException {
         User user = userService.getCurrentUser();
         if(user.getNewsPreferences() == null){
+            log.warn("No preferences saved for current user. Update failed");
             throw new ResourceNotFoundException("No preferences saved for user with id "+user.getUserId());
         }
         NewsPreferences currentPref = user.getNewsPreferences();
@@ -63,6 +70,7 @@ public class NewsPreferencesService {
                 .sortBy(getValidatedSortBy(pref.getSortBy()))
                 .user(user)
                 .build();
+        log.debug("Successfully updated news preferences of current user : {}",newPref);
 
 
         NewsPreferences savedPref =  newsPreferencesRepository.save(newPref);
