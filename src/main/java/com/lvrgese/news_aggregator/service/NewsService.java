@@ -4,12 +4,10 @@ import com.lvrgese.news_aggregator.dto.GNewsResponse;
 import com.lvrgese.news_aggregator.entity.NewsPreferences;
 import com.lvrgese.news_aggregator.entity.User;
 import com.lvrgese.news_aggregator.exception.GNewsFetchException;
-import com.lvrgese.news_aggregator.exception.PreferencesNotFoundException;
-import com.lvrgese.news_aggregator.repository.UserRepository;
+import com.lvrgese.news_aggregator.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -21,23 +19,22 @@ import java.util.Optional;
 public class NewsService {
 
     private final RestTemplate restTemplate;
-    private final UserRepository userRepository;
-
+    private final UserService userService;
     @Value("${gnews.api.key}")
     private String apiKey;
 
 
-    public NewsService(RestTemplate restTemplate, UserRepository userRepository) {
+    public NewsService(RestTemplate restTemplate, UserService userService) {
         this.restTemplate = restTemplate;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
-    public GNewsResponse fetchNews() throws PreferencesNotFoundException, GNewsFetchException {
+    public GNewsResponse fetchNews() throws ResourceNotFoundException, GNewsFetchException {
 
-        User user = getCurrentUser();
+        User user = userService.getCurrentUser();
         NewsPreferences pref = user.getNewsPreferences();
         if(pref == null){
-            throw new PreferencesNotFoundException("No preferences set for current user");
+            throw new ResourceNotFoundException("No preferences set for current user");
         }
 
         URI uri = UriComponentsBuilder
@@ -57,14 +54,5 @@ public class NewsService {
         catch (Exception ex){
             throw new GNewsFetchException("GNews API call unsuccessful");
         }
-    }
-
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String username = authentication.getName();
-
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

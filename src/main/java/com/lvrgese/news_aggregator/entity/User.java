@@ -14,7 +14,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
-    @NotBlank
     @Email
     private String username;
 
@@ -37,7 +36,7 @@ public class User {
     public User() {
     }
 
-    public User(builder builder) {
+    public User(UserBuilder builder) {
         this.userRole = builder.userRole;
         this.password = builder.password;
         this.name = builder.name;
@@ -45,31 +44,31 @@ public class User {
         this.isEnabled = builder.isEnabled;
     }
 
-    public static class builder{
+    public static class UserBuilder {
         private String username;
         private String name;
         private String password;
         private UserRole userRole;
         private Boolean isEnabled;
 
-        public builder username(String username) {
+        public UserBuilder username(String username) {
             this.username= username;
             return this;
         }
 
-        public builder name(String name) {
+        public UserBuilder name(String name) {
             this.name= name;
             return this;
         }
-        public builder password(String password) {
+        public UserBuilder password(String password) {
             this.password= password;
             return this;
         }
-        public builder userRole(UserRole role) {
+        public UserBuilder userRole(UserRole role) {
             this.userRole= role;
             return this;
         }
-        public builder isEnabled(Boolean val) {
+        public UserBuilder isEnabled(Boolean val) {
             this.isEnabled= val;
             return this;
         }
@@ -77,6 +76,10 @@ public class User {
         public User build(){
             return new User(this);
         }
+    }
+
+    public static UserBuilder builder(){
+        return new UserBuilder();
     }
 
     public Boolean getEnabled() {

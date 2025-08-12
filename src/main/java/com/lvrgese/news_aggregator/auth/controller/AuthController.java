@@ -5,6 +5,7 @@ import com.lvrgese.news_aggregator.auth.entity.RegisterRequest;
 import com.lvrgese.news_aggregator.auth.entity.AuthResponse;
 import com.lvrgese.news_aggregator.auth.service.AuthService;
 import com.lvrgese.news_aggregator.exception.InvalidCredentialsException;
+import com.lvrgese.news_aggregator.exception.ResourceAlreadyExistsException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerNewUser(@RequestBody @Valid RegisterRequest req){
+    public ResponseEntity<AuthResponse> registerNewUser(@RequestBody @Valid RegisterRequest req) throws ResourceAlreadyExistsException {
         return new ResponseEntity<AuthResponse>(authService.registerUser(req), HttpStatus.CREATED) ;
     }
 

@@ -2,7 +2,7 @@ package com.lvrgese.news_aggregator.controller;
 
 import com.lvrgese.news_aggregator.dto.GNewsResponse;
 import com.lvrgese.news_aggregator.exception.GNewsFetchException;
-import com.lvrgese.news_aggregator.exception.PreferencesNotFoundException;
+import com.lvrgese.news_aggregator.exception.ResourceNotFoundException;
 import com.lvrgese.news_aggregator.service.NewsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class NewsController {
     }
 
     @GetMapping
-    public ResponseEntity<GNewsResponse> getNewsForCurrentUser() throws PreferencesNotFoundException, GNewsFetchException {
+    public ResponseEntity<GNewsResponse> getNewsForCurrentUser() throws ResourceNotFoundException, GNewsFetchException {
         GNewsResponse response = newsService.fetchNews();
         return ResponseEntity.ok(response);
     }

@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class NewsPreferences {
@@ -14,7 +13,6 @@ public class NewsPreferences {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long prefId;
     @NotBlank
-    @NotNull
     private String query; //Mandatory, Keywords separated by space or combined with logical operators
     private String lang; //Optional
     private String country; //Optional
@@ -31,7 +29,7 @@ public class NewsPreferences {
     public NewsPreferences() {
     }
 
-    public NewsPreferences(builder b){
+    public NewsPreferences(Builder b){
         this.prefId = b.prefId;
         this.query = b.query;
         this.lang = b.lang;
@@ -41,7 +39,7 @@ public class NewsPreferences {
         this.user = b.user;
     }
 
-    public static class builder{
+    public static class Builder {
         private Long prefId;
         private String query;
         private String lang;
@@ -50,33 +48,33 @@ public class NewsPreferences {
         private String sortBy;
         private User user;
 
-        public builder prefId(Long id){
+        public Builder prefId(Long id){
             this.prefId = id;
             return this;
         }
 
-        public builder query(String query){
+        public Builder query(String query){
             this.query = query;
             return this;
         }
-        public builder lang(String lang){
+        public Builder lang(String lang){
             this.lang = lang;
             return this;
         }
-        public builder country(String country){
+        public Builder country(String country){
             this.country = country;
             return this;
         }
-        public builder count(int count){
+        public Builder count(int count){
             this.count = count;
             return this;
         }
-        public builder sortBy(String sortBy){
+        public Builder sortBy(String sortBy){
             this.sortBy = sortBy;
             return this;
         }
 
-        public builder user(User user){
+        public Builder user(User user){
             this.user = user;
             return this;
         }
@@ -84,6 +82,9 @@ public class NewsPreferences {
         public NewsPreferences build(){
             return new NewsPreferences(this);
         }
+    }
+    public static Builder builder(){
+        return new Builder();
     }
 
     public long getPrefId() {

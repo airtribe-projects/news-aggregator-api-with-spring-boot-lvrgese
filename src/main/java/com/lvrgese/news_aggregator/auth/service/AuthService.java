@@ -1,6 +1,7 @@
 package com.lvrgese.news_aggregator.auth.service;
 
 import com.lvrgese.news_aggregator.auth.entity.*;
+import com.lvrgese.news_aggregator.exception.ResourceAlreadyExistsException;
 import com.lvrgese.news_aggregator.repository.UserRepository;
 import com.lvrgese.news_aggregator.auth.util.JwtUtil;
 import com.lvrgese.news_aggregator.entity.User;
@@ -28,13 +29,17 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public AuthResponse registerUser(RegisterRequest req){
-        User user = new User.builder()
+    public AuthResponse registerUser(RegisterRequest req) throws ResourceAlreadyExistsException {
+
+        if(userRepository.findByUsername(req.getUsername()).isPresent()){
+            throw new ResourceAlreadyExistsException("User already exists. Please login");
+        }
+        User user = User.builder()
                 .username(req.getUsername())
                 .name(req.getName())
                 .password(passwordEncoder.encode(req.getPassword()))
                 .isEnabled(true)
-                .userRole(UserRole.ROLE_ADMIN)
+                .userRole(UserRole.ROLE_USER)
                 .build();
         User savedUser =  userRepository.save(user);
 

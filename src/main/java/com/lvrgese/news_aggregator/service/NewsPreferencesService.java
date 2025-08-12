@@ -1,17 +1,13 @@
 package com.lvrgese.news_aggregator.service;
 
 import com.lvrgese.news_aggregator.dto.NewsPreferencesDTO;
-import com.lvrgese.news_aggregator.dto.UserDTO;
 import com.lvrgese.news_aggregator.entity.Country;
 import com.lvrgese.news_aggregator.entity.Language;
 import com.lvrgese.news_aggregator.entity.NewsPreferences;
 import com.lvrgese.news_aggregator.entity.User;
-import com.lvrgese.news_aggregator.exception.PreferencesNotFoundException;
+import com.lvrgese.news_aggregator.exception.ResourceAlreadyExistsException;
+import com.lvrgese.news_aggregator.exception.ResourceNotFoundException;
 import com.lvrgese.news_aggregator.repository.NewsPreferencesRepository;
-import com.lvrgese.news_aggregator.repository.UserRepository;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,36 +15,28 @@ public class NewsPreferencesService {
 
     private final NewsPreferencesRepository newsPreferencesRepository;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public NewsPreferencesService(NewsPreferencesRepository newsPreferencesRepository, UserRepository userRepository) {
+    public NewsPreferencesService(NewsPreferencesRepository newsPreferencesRepository, UserService userService) {
         this.newsPreferencesRepository = newsPreferencesRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
-    public UserDTO getUserProfile() {
-        User user = getCurrentUser();
-        NewsPreferencesDTO pref = null;
-        try {
-            pref = getNewsPreferencesForCurrentUser();
-        }
-        catch (Exception ignored){}
-
-        return new UserDTO(user,pref);
-    }
-
-    public NewsPreferencesDTO getNewsPreferencesForCurrentUser() throws PreferencesNotFoundException {
-        User user = getCurrentUser();
+    public NewsPreferencesDTO getNewsPreferencesForCurrentUser() throws ResourceNotFoundException {
+        User user = userService.getCurrentUser();
         if(user.getNewsPreferences() == null){
-            throw new PreferencesNotFoundException("No preferences saved for user with id "+user.getUserId());
+            throw new ResourceNotFoundException("No preferences saved for user with id "+user.getUserId());
         }
         return mapToDto(user.getNewsPreferences());
     }
 
-    public NewsPreferencesDTO createNewsPreferencesForUser(NewsPreferencesDTO pref){
+    public NewsPreferencesDTO createNewsPreferencesForUser(NewsPreferencesDTO pref) throws ResourceAlreadyExistsException {
 
-        User user = getCurrentUser();
-        NewsPreferences newPref =new NewsPreferences.builder()
+        User user = userService.getCurrentUser();
+        if(user.getNewsPreferences() != null){
+            throw new ResourceAlreadyExistsException("News preferences already exits. Please update");
+        }
+        NewsPreferences newPref =NewsPreferences.builder()
                 .query(pref.getQuery())
                 .country(Country.isValid(pref.getCountry())? pref.getCountry() : null)
                 .lang(Language.isValid(pref.getLang()) ? pref.getLang() : null)
@@ -60,13 +48,13 @@ public class NewsPreferencesService {
         return mapToDto(savedPref);
     }
 
-    public NewsPreferencesDTO updateNewsPreferencesForUser(NewsPreferencesDTO pref) throws PreferencesNotFoundException {
-        User user = getCurrentUser();
+    public NewsPreferencesDTO updateNewsPreferencesForUser(NewsPreferencesDTO pref) throws ResourceNotFoundException {
+        User user = userService.getCurrentUser();
         if(user.getNewsPreferences() == null){
-            throw new PreferencesNotFoundException("No preferences saved for user with id "+user.getUserId());
+            throw new ResourceNotFoundException("No preferences saved for user with id "+user.getUserId());
         }
         NewsPreferences currentPref = user.getNewsPreferences();
-        NewsPreferences newPref =new NewsPreferences.builder()
+        NewsPreferences newPref = NewsPreferences.builder()
                 .prefId(currentPref.getPrefId())
                 .query(pref.getQuery())
                 .country(Country.isValid(pref.getCountry())? pref.getCountry() :currentPref.getCountry())
@@ -79,15 +67,6 @@ public class NewsPreferencesService {
 
         NewsPreferences savedPref =  newsPreferencesRepository.save(newPref);
         return mapToDto(savedPref);
-    }
-
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String username = authentication.getName();
-
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     private NewsPreferencesDTO mapToDto(NewsPreferences pref){

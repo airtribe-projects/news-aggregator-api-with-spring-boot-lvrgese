@@ -1,15 +1,12 @@
 package com.lvrgese.news_aggregator.auth.entity;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 public class LoginRequest {
 
     @NotBlank
-    @NotNull
     private String username;
     @NotBlank
-    @NotNull
     private String password;
 
     public LoginRequest() {
