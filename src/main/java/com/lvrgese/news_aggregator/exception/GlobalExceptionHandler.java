@@ -35,4 +35,8 @@ public class GlobalExceptionHandler {
     public  ResponseEntity<?> handleUserNotFoundException(Exception ex){
         return ResponseEntity.status(400).body(Map.of("Error",ex.getMessage()));
     }
+    @ExceptionHandler(GNewsFetchException.class)
+    public  ResponseEntity<?> handleGNewsFetchException(Exception ex){
+        return ResponseEntity.status(502).body(Map.of("Error",ex.getMessage()));
+    }
 }

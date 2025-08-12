@@ -30,14 +30,14 @@ public class NewsPreferencesService {
         User user = getCurrentUser();
         NewsPreferencesDTO pref = null;
         try {
-            pref = getNewsPreferenceByUserId();
+            pref = getNewsPreferencesForCurrentUser();
         }
         catch (Exception ignored){}
 
         return new UserDTO(user,pref);
     }
 
-    public NewsPreferencesDTO getNewsPreferenceByUserId() throws PreferencesNotFoundException {
+    public NewsPreferencesDTO getNewsPreferencesForCurrentUser() throws PreferencesNotFoundException {
         User user = getCurrentUser();
         if(user.getNewsPreferences() == null){
             throw new PreferencesNotFoundException("No preferences saved for user with id "+user.getUserId());

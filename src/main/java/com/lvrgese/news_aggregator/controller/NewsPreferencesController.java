@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api")
 public class NewsPreferencesController {
 
     private final NewsPreferencesService newsPreferencesService;
@@ -28,7 +29,7 @@ public class NewsPreferencesController {
 
     @GetMapping("/preferences")
     public ResponseEntity<NewsPreferencesDTO> getPreferencesForCurrentUser() throws PreferencesNotFoundException {
-        return ResponseEntity.ok(newsPreferencesService.getNewsPreferenceByUserId());
+        return ResponseEntity.ok(newsPreferencesService.getNewsPreferencesForCurrentUser());
     }
 
     @PutMapping("/preferences")

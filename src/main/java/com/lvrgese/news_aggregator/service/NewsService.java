@@ -3,6 +3,8 @@ package com.lvrgese.news_aggregator.service;
 import com.lvrgese.news_aggregator.dto.GNewsResponse;
 import com.lvrgese.news_aggregator.entity.NewsPreferences;
 import com.lvrgese.news_aggregator.entity.User;
+import com.lvrgese.news_aggregator.exception.GNewsFetchException;
+import com.lvrgese.news_aggregator.exception.PreferencesNotFoundException;
 import com.lvrgese.news_aggregator.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -30,10 +32,13 @@ public class NewsService {
         this.userRepository = userRepository;
     }
 
-    public GNewsResponse fetchNews() {
+    public GNewsResponse fetchNews() throws PreferencesNotFoundException, GNewsFetchException {
 
         User user = getCurrentUser();
         NewsPreferences pref = user.getNewsPreferences();
+        if(pref == null){
+            throw new PreferencesNotFoundException("No preferences set for current user");
+        }
 
         URI uri = UriComponentsBuilder
                 .fromUriString("https://gnews.io/api/v4")
@@ -46,10 +51,12 @@ public class NewsService {
                 .queryParam("apikey", apiKey)
                 .build(true) // keep encoded params as-is
                 .toUri();
-
-        System.out.println("Requesting: " + uri);
-
-        return restTemplate.getForObject(uri, GNewsResponse.class);
+        try{
+            return restTemplate.getForObject(uri, GNewsResponse.class);
+        }
+        catch (Exception ex){
+            throw new GNewsFetchException("GNews API call unsuccessful");
+        }
     }
 
     public User getCurrentUser() {
