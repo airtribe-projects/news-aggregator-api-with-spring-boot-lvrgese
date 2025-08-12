@@ -1,17 +1,16 @@
 package com.lvrgese.news_aggregator.service;
 
+import com.lvrgese.news_aggregator.dto.GNewsResponse;
 import com.lvrgese.news_aggregator.entity.NewsPreferences;
 import com.lvrgese.news_aggregator.entity.User;
 import com.lvrgese.news_aggregator.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.util.Optional;
@@ -19,19 +18,19 @@ import java.util.Optional;
 @Service
 public class NewsService {
 
-    private final WebClient gNewsClient;
+    private final RestTemplate restTemplate;
     private final UserRepository userRepository;
 
     @Value("${gnews.api.key}")
     private String apiKey;
 
 
-    public NewsService(@Qualifier("gNewsClient") WebClient gNewsClient, UserRepository userRepository) {
-        this.gNewsClient = gNewsClient;
+    public NewsService(RestTemplate restTemplate, UserRepository userRepository) {
+        this.restTemplate = restTemplate;
         this.userRepository = userRepository;
     }
 
-    public Mono<String> fetchNews() {
+    public GNewsResponse fetchNews() {
 
         User user = getCurrentUser();
         NewsPreferences pref = user.getNewsPreferences();
@@ -48,11 +47,9 @@ public class NewsService {
                 .build(true) // keep encoded params as-is
                 .toUri();
 
-        return gNewsClient.get()
-                .uri(uri)
-                .retrieve()
-                .bodyToMono(String.class)
-                .doOnNext(body -> System.out.println("📩 Response: " + body));
+        System.out.println("Requesting: " + uri);
+
+        return restTemplate.getForObject(uri, GNewsResponse.class);
     }
 
     public User getCurrentUser() {

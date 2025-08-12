@@ -1,5 +1,6 @@
 package com.lvrgese.news_aggregator.controller;
 
+import com.lvrgese.news_aggregator.dto.GNewsResponse;
 import com.lvrgese.news_aggregator.service.NewsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,8 @@ public class NewsController {
     }
 
     @GetMapping("/news")
-    public ResponseEntity<Mono<String>> getNewsForCurrentUser(){
-        return ResponseEntity.ok(newsService.fetchNews());
+    public ResponseEntity<GNewsResponse> getNewsForCurrentUser() {
+        GNewsResponse response = newsService.fetchNews();
+        return ResponseEntity.ok(response);
     }
 }
