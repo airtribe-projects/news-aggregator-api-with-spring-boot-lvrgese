@@ -1,6 +1,5 @@
 package com.lvrgese.news_aggregator.service;
 
-import com.lvrgese.news_aggregator.dto.NewsPreferencesDTO;
 import com.lvrgese.news_aggregator.dto.UserDTO;
 import com.lvrgese.news_aggregator.entity.User;
 import com.lvrgese.news_aggregator.repository.UserRepository;
@@ -13,11 +12,9 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final NewsPreferencesService newsPreferencesService;
 
-    public UserService(UserRepository userRepository, NewsPreferencesService newsPreferencesService) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.newsPreferencesService = newsPreferencesService;
     }
 
     public User getCurrentUser() {
@@ -31,12 +28,7 @@ public class UserService {
 
     public UserDTO getUserProfile() {
         User user = getCurrentUser();
-        NewsPreferencesDTO pref = null;
-        try {
-            pref = newsPreferencesService.getNewsPreferencesForCurrentUser();
-        }
-        catch (Exception ignored){}
 
-        return new UserDTO(user,pref);
+        return new UserDTO(user);
     }
 }

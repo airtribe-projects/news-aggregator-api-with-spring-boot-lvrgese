@@ -9,25 +9,15 @@ public class UserDTO {
     private String username;
     private String name;
     private UserRole userRole;
-    private NewsPreferencesDTO newsPreferencesDTO;
 
     public UserDTO() {
     }
 
-    public UserDTO(User user ,NewsPreferencesDTO pref){
+    public UserDTO(User user ){
         this.userId = user.getUserId();
         this.username =user.getUsername();
         this.name = user.getName();
         this.userRole = user.getUserRole();
-        this.newsPreferencesDTO = pref;
-    }
-
-    public NewsPreferencesDTO getNewsPreferencesDTO() {
-        return newsPreferencesDTO;
-    }
-
-    public void setNewsPreferencesDTO(NewsPreferencesDTO newsPreferencesDTO) {
-        this.newsPreferencesDTO = newsPreferencesDTO;
     }
 
     public String getUsername() {
