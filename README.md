@@ -38,7 +38,7 @@ com.lvrgese.news_aggregator
 └── util/          # Utility Classes (e.g., JWT)
 
 
-
+```
 ---
 
 ## 🧪 Testing Overview
