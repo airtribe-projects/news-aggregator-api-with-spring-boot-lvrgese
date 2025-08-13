@@ -110,3 +110,185 @@ spring.datasource.password=admin
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
+
+📌 Example Requests & Responses
+1️⃣ Register User
+Request
+
+http
+Copy
+Edit
+POST /api/register
+Content-Type: application/json
+json
+Copy
+Edit
+{
+  "username": "john_doe",
+  "name": "John Doe",
+  "password": "password123"
+}
+Response
+
+json
+Copy
+Edit
+{
+  "userId": 1,
+  "name": "John Doe",
+  "username": "john_doe",
+  "token": "eyJhbGciOiJIUzI1..."
+}
+2️⃣ Login User
+Request
+
+http
+Copy
+Edit
+POST /api/login
+Content-Type: application/json
+json
+Copy
+Edit
+{
+  "username": "john_doe",
+  "password": "password123"
+}
+Response
+
+json
+Copy
+Edit
+{
+  "userId": 1,
+  "name": "John Doe",
+  "username": "john_doe",
+  "token": "eyJhbGciOiJIUzI1..."
+}
+3️⃣ Get Current User Profile
+Request
+
+http
+Copy
+Edit
+GET /api/profile
+Authorization: Bearer eyJhbGciOiJIUzI1...
+Response
+
+json
+Copy
+Edit
+{
+  "userId": 1,
+  "username": "john_doe",
+  "name": "John Doe"
+}
+4️⃣ Get News Preferences
+Request
+
+http
+Copy
+Edit
+GET /api/preferences
+Authorization: Bearer eyJhbGciOiJIUzI1...
+Response
+
+json
+Copy
+Edit
+{
+  "prefId": 1,
+  "query": "technology",
+  "lang": "en",
+  "country": "us",
+  "count": 5,
+  "sortBy": "publishedAt"
+}
+5️⃣ Create News Preferences
+Request
+
+http
+Copy
+Edit
+POST /api/preferences
+Authorization: Bearer eyJhbGciOiJIUzI1...
+Content-Type: application/json
+json
+Copy
+Edit
+{
+  "query": "technology",
+  "lang": "en",
+  "country": "us",
+  "count": 5,
+  "sortBy": "publishedAt"
+}
+Response
+
+json
+Copy
+Edit
+{
+  "prefId": 1,
+  "query": "technology",
+  "lang": "en",
+  "country": "us",
+  "count": 5,
+  "sortBy": "publishedAt"
+}
+6️⃣ Update News Preferences
+Request
+
+http
+Copy
+Edit
+PUT /api/preferences
+Authorization: Bearer eyJhbGciOiJIUzI1...
+Content-Type: application/json
+json
+Copy
+Edit
+{
+  "query": "sports",
+  "lang": "en",
+  "country": "in",
+  "count": 10,
+  "sortBy": "relevance"
+}
+Response
+
+json
+Copy
+Edit
+{
+  "prefId": 1,
+  "query": "sports",
+  "lang": "en",
+  "country": "in",
+  "count": 10,
+  "sortBy": "relevance"
+}
+7️⃣ Fetch Personalized News
+Request
+
+http
+Copy
+Edit
+GET /api/news
+Authorization: Bearer eyJhbGciOiJIUzI1...
+Response
+
+json
+Copy
+Edit
+{
+  "totalArticles": 10,
+  "articles": [
+    {
+      "title": "AI breakthrough in 2025",
+      "description": "New AI model sets performance record",
+      "url": "https://example.com/article",
+      "publishedAt": "2025-08-13T10:00:00Z"
+    }
+  ]
+}
