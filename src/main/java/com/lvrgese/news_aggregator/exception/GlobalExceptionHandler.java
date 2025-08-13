@@ -1,0 +1,40 @@
+package com.lvrgese.news_aggregator.exception;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<?> handleInvalidCredentialsException(Exception ex){
+        return ResponseEntity.status(400).body(Map.of("Invalid Credentials",ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidJwtTokenException.class)
+    public  ResponseEntity<?> handleInvalidJwtTokenException(Exception ex){
+        return ResponseEntity.status(401).body(Map.of("Invalid Jwt Token",ex.getMessage()));
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public  ResponseEntity<?> handleUsernameNotFoundException(Exception ex){
+        return ResponseEntity.status(400).body(Map.of("Invalid username",ex.getMessage()));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public  ResponseEntity<?> handleResourceNotFoundException(Exception ex){
+        return ResponseEntity.status(400).body(Map.of("Error",ex.getMessage()));
+    }
+    @ExceptionHandler(GNewsFetchException.class)
+    public  ResponseEntity<?> handleGNewsFetchException(Exception ex){
+        return ResponseEntity.status(502).body(Map.of("Error",ex.getMessage()));
+    }
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public  ResponseEntity<?> handleResourceAlreadyExistsException(Exception ex){
+        return ResponseEntity.status(409).body(Map.of("Error",ex.getMessage()));
+    }
+}

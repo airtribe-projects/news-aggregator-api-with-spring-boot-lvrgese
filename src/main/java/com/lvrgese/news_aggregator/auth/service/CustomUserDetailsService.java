@@ -1,0 +1,27 @@
+package com.lvrgese.news_aggregator.auth.service;
+
+import com.lvrgese.news_aggregator.auth.entity.CustomUserDetails;
+import com.lvrgese.news_aggregator.entity.User;
+import com.lvrgese.news_aggregator.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with name: " + username));
+
+        return new CustomUserDetails(user);
+    }
+}
