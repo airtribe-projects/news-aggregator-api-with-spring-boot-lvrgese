@@ -111,91 +111,85 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 
-📌 Example Requests & Responses
-1️⃣ Register User
-Request
+```
+# 📌 Example Requests & Responses
 
-http
-Copy
-Edit
-POST /api/register
+## 1️⃣ Register User
+**Request**  
+POST /api/register  
 Content-Type: application/json
-json
-Copy
-Edit
+
+```json
 {
   "username": "john_doe",
   "name": "John Doe",
   "password": "password123"
 }
-Response
+```
 
-json
-Copy
-Edit
+**Response**
+```json
 {
   "userId": 1,
   "name": "John Doe",
   "username": "john_doe",
   "token": "eyJhbGciOiJIUzI1..."
 }
-2️⃣ Login User
-Request
+```
 
-http
-Copy
-Edit
-POST /api/login
+---
+
+## 2️⃣ Login User
+**Request**  
+POST /api/login  
 Content-Type: application/json
-json
-Copy
-Edit
+
+```json
 {
   "username": "john_doe",
   "password": "password123"
 }
-Response
+```
 
-json
-Copy
-Edit
+**Response**
+```json
 {
   "userId": 1,
   "name": "John Doe",
   "username": "john_doe",
   "token": "eyJhbGciOiJIUzI1..."
 }
-3️⃣ Get Current User Profile
-Request
+```
 
-http
-Copy
-Edit
-GET /api/profile
+---
+
+## 3️⃣ Get Current User Profile
+**Request**  
+GET /api/profile  
 Authorization: Bearer eyJhbGciOiJIUzI1...
-Response
 
-json
-Copy
-Edit
+_No request body_
+
+**Response**
+```json
 {
   "userId": 1,
   "username": "john_doe",
   "name": "John Doe"
 }
-4️⃣ Get News Preferences
-Request
+```
 
-http
-Copy
-Edit
-GET /api/preferences
+---
+
+## 4️⃣ Get News Preferences
+**Request**  
+GET /api/preferences  
 Authorization: Bearer eyJhbGciOiJIUzI1...
-Response
 
-json
-Copy
-Edit
+_No request body_
+
+**Response**
+```json
 {
   "prefId": 1,
   "query": "technology",
@@ -204,18 +198,17 @@ Edit
   "count": 5,
   "sortBy": "publishedAt"
 }
-5️⃣ Create News Preferences
-Request
+```
 
-http
-Copy
-Edit
-POST /api/preferences
-Authorization: Bearer eyJhbGciOiJIUzI1...
+---
+
+## 5️⃣ Create News Preferences
+**Request**  
+POST /api/preferences  
+Authorization: Bearer eyJhbGciOiJIUzI1...  
 Content-Type: application/json
-json
-Copy
-Edit
+
+```json
 {
   "query": "technology",
   "lang": "en",
@@ -223,11 +216,10 @@ Edit
   "count": 5,
   "sortBy": "publishedAt"
 }
-Response
+```
 
-json
-Copy
-Edit
+**Response**
+```json
 {
   "prefId": 1,
   "query": "technology",
@@ -236,18 +228,17 @@ Edit
   "count": 5,
   "sortBy": "publishedAt"
 }
-6️⃣ Update News Preferences
-Request
+```
 
-http
-Copy
-Edit
-PUT /api/preferences
-Authorization: Bearer eyJhbGciOiJIUzI1...
+---
+
+## 6️⃣ Update News Preferences
+**Request**  
+PUT /api/preferences  
+Authorization: Bearer eyJhbGciOiJIUzI1...  
 Content-Type: application/json
-json
-Copy
-Edit
+
+```json
 {
   "query": "sports",
   "lang": "en",
@@ -255,11 +246,10 @@ Edit
   "count": 10,
   "sortBy": "relevance"
 }
-Response
+```
 
-json
-Copy
-Edit
+**Response**
+```json
 {
   "prefId": 1,
   "query": "sports",
@@ -268,19 +258,19 @@ Edit
   "count": 10,
   "sortBy": "relevance"
 }
-7️⃣ Fetch Personalized News
-Request
+```
 
-http
-Copy
-Edit
-GET /api/news
+---
+
+## 7️⃣ Fetch Personalized News
+**Request**  
+GET /api/news  
 Authorization: Bearer eyJhbGciOiJIUzI1...
-Response
 
-json
-Copy
-Edit
+_No request body_
+
+**Response**
+```json
 {
   "totalArticles": 10,
   "articles": [
@@ -292,3 +282,4 @@ Edit
     }
   ]
 }
+```
