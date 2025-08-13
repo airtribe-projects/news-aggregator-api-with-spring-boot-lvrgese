@@ -10,8 +10,7 @@ A Spring Boot 3.4+ REST API for user authentication, profile management, news pr
 - **News Preferences** CRUD
 - **Fetch Personalized News** from GNews API
 - **Centralized Exception Handling**
-- **Unit Tests** for all service layers and controller slices
-- **Uses Modern Spring Boot Testing** with `@MockitoBean` (Spring Boot 3.4+ replacement for `@MockBean`)
+- **Unit Tests** for all service layers and Respository classes with custom methods
 
 ---
 
@@ -27,15 +26,17 @@ A Spring Boot 3.4+ REST API for user authentication, profile management, news pr
 ---
 
 ## 📂 Project Structure
+```plaintext
 com.lvrgese.news_aggregator
-├── auth/ # Auth-related controllers & services
-├── controller/ # REST controllers
-├── dto/ # Data Transfer Objects
-├── entity/ # JPA Entities
-├── exception/ # Custom Exceptions
-├── repository/ # Spring Data Repositories
-├── service/ # Business Logic Services
-└── util/ # Utility Classes (e.g., JWT)
+├── auth/          # Auth-related controllers & services
+├── controller/    # REST controllers
+├── dto/           # Data Transfer Objects
+├── entity/        # JPA Entities
+├── exception/     # Custom Exceptions
+├── repository/    # Spring Data Repositories
+├── service/       # Business Logic Services
+└── util/          # Utility Classes (e.g., JWT)
+
 
 
 ---
@@ -69,32 +70,38 @@ Unit tests cover all main business logic paths.
 
 mvn clean test
 
-Method	Endpoint	Description
-POST	/api/register	Register new user
-POST	/api/login	Login user and get JWT
-GET	/api/profile	Get current user profile
-GET	/api/preferences	Get user news preferences
-POST	/api/preferences	Create news preferences
-PUT	/api/preferences	Update news preferences
-GET	/api/news	Fetch personalized news
+## 📜 API Endpoints
 
-🔐 Security
-JWT-based authentication
+| Method | Endpoint              | Description                       |
+|--------|-----------------------|-----------------------------------|
+| POST   | `/api/register`       | Register new user                 |
+| POST   | `/api/login`          | Login user and get JWT            |
+| GET    | `/api/profile`        | Get current user profile          |
+| GET    | `/api/preferences`    | Get user news preferences         |
+| POST   | `/api/preferences`    | Create news preferences           |
+| PUT    | `/api/preferences`    | Update news preferences           |
+| GET    | `/api/news`           | Fetch personalized news           |
 
-Secured endpoints require a valid token in Authorization: Bearer <token> header
+---
 
-📝 Logging
-Uses Lombok's @Slf4j in all services and controllers
+## 🔐 Security
+- JWT-based authentication  
+- Secured endpoints require a valid token in:  
 
-Info logs for successful actions
 
-Warn logs for invalid operations
+---
 
-Error logs for exceptions
+## 📝 Logging
+- Uses Lombok's `@Slf4j` in all services and controllers
+- **Info** logs for successful actions
+- **Warn** logs for invalid operations
+- **Error** logs for exceptions
 
-🗄 Configuration
-application.properties example:
+---
 
+## 🗄 Configuration
+Example `application.properties`:
+```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/newsdb
 spring.datasource.username=root
 spring.datasource.password=root
